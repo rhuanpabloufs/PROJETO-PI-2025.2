@@ -1,14 +1,15 @@
 #ifndef OLIMPIADAS_H
 #define OLIMPIADAS_H
 
-// Estrutura teste
+// Estrutura de um atleta
 typedef struct {
-    int id;
-    char nome[100];
-    float altura;
+    int id;               // ID do Atleta
+    char nome[100];       // Nome
+    char sexo;            // 'M' ou 'F'
+    float altura;         // Em cm
+    float peso;           // Em kg
 } Atleta;
 
+Atleta* ler_atletas(const char* nome_arquivo, int* qtd_total);
 
-void ler_dados_teste();
-
-#endif
+#endif //OLIMPIADAS_H

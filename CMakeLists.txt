@@ -5,4 +5,5 @@ set(CMAKE_C_STANDARD 99)
 add_executable(olimpiadas_app
         main.c
         csv_utils.c
+        bios.csv
 )
