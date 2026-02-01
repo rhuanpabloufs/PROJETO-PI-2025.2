@@ -1,55 +1,32 @@
-# Prerequisites
-*.d
+# Arquivos da IDE
+.idea/
+*.iml
+*.iws
 
-# Object files
+# Ignora a pasta de build do CMake (onde ficam os executáveis)
+cmake-build-*/
+
+# Object files (lixo intermediário da compilação)
 *.o
-*.ko
 *.obj
-*.elf
 
-# Linker output
-*.ilk
-*.map
-*.exp
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
+# Executáveis (não enviamos o .exe, enviamos o código fonte!)
 *.exe
 *.out
 *.app
-*.i*86
-*.x86_64
-*.hex
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
+# Libraries e Arquivos Linkados
+*.lib
+*.a
+*.dll
+*.so
+*.dylib
+
+# Logs e Debug
+*.log
 *.pdb
+*.dSYM/
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
-# debug information files
-*.dwo
+# Sistema Operacional
+.DS_Store
+Thumbs.db
