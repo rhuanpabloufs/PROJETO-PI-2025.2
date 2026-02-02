@@ -6,4 +6,5 @@ add_executable(olimpiadas_app
         main.c
         csv_utils.c
         bios.csv
+        evolucaoMulheres.c
 )
