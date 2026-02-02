@@ -2,108 +2,111 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
-typedef struct {
-	char nome[100];
-	char medalha[10];
-	int ano;
-} Atleta;
 int contador = 0;
-void pegarNomesMedalhistas(char* frase,char* nome, char* medalha){
-	int aspas = 0;
-	int numVirgulas = 0;
-	char algo[150];
-	int j = 0;
-	for(int i = 0; i < strlen(frase); i++){
-		if(frase[i] == '"'){
-			aspas = !aspas;
-		}
-		if((frase[i]) == ',' && !aspas){
-			numVirgulas++;
-		}
-		if(numVirgulas >= 4 && numVirgulas <= 5){
-			algo[j++] = frase[i+1];
-		}
-	}
-	algo[j == 0 ? j : j - 1] = '\0';
-	if(algo[0] == ','){
-		sscanf(algo,",%[^\n]", nome);
-		medalha[0] = '\0';
-	} else {
-		sscanf(algo,"%[^,],%[^\n]",medalha,nome);
-	}
-}
-void pegarAlturaMedalhistas(char* frase,char* nome, int* altura){
-	int aspas = 0;
-	char AlturaP[50];
-	int numVirgulas = 0;
-	int j = 0;
-	int k = 0;
-	for(int i = 0; i < strlen(frase); i++){
-		if(frase[i] == '"'){
-			aspas = !aspas;
-		}
-		if((frase[i]) == ',' && !aspas){
-			numVirgulas++;
-		}
-		if(numVirgulas == 3){
-			nome[j++] = frase[i+1];
-		}
-		if(numVirgulas == 8){
-			AlturaP[k++] = frase[i];
-		}
-	}
-	nome[j - 1] = '\0';
-	AlturaP[k] = '\0';
-	*altura = 0;
-	nome[strcspn(nome,"•")] = ' ';
-	sscanf(AlturaP, ",%d", altura);
-}
-int forzinho(char* nome,Atleta* atletas,int altura){
-	for(int j = 0; j < contador; j++){
-		if(!strcmp(nome, atletas[j].nome)){
+int funcaoDeAjuda(int id, int altura, int atletas[],int tamanho){
+	for(int i = 0; i < tamanho; i++){
+		if(id == atletas[i]){
+			contador++;
 			return altura;
 		}
 	}
 	return 0;
 }
-
-int alturadosAtletas(Atleta atletas[]){
+int encontrarAlturas(char* frase,int atletas[], int tamanho){
+	int aspas = 0;
+	int virgulas = 0;
+	char altura[20];
+	int j = 0;
+	char idP[10];
+	int k = 0;
+	int id;
+	int medida;
+	int len = strlen(frase);
+	for(int i = 0; i + 1 < len; i++){
+		if(frase[i] == '"'){
+			aspas = !aspas;	
+		}
+		if(frase[i] == ',' && !aspas){
+			virgulas++;
+		}
+		if(virgulas == 7){
+			idP[j++] = frase[i+1];
+		}
+		if(virgulas == 8){
+			altura[k++] = frase[i+1];
+		}
+	}
+	idP[j - 1] = '\0';
+	sscanf(idP,"%d",&id);
+	altura[k == 0 ? k : k - 1] = '\0';
+	if(altura[0] != '\0'){
+		sscanf(altura,"%d",&medida);
+	} else {
+		medida = 0;
+	}
+	return funcaoDeAjuda(id,medida,atletas,tamanho);
+}
+int fraseBIOS(int atletas[], int tamanho){
+	FILE* bios = fopen("bios.csv","r");
 	int soma = 0;
-	FILE* teste = fopen("bios.csv","r");
 	char frase[1000];
-	fgets(frase, 1000, teste);
-	for(int i = 0; i < 1000; i++){
-		char nome[100];
-		int altura;
-		fgets(frase, 1000, teste);
-		pegarAlturaMedalhistas(frase,nome,&altura);
-		soma += forzinho(nome,atletas,altura);
+	while(fgets(frase,1000,bios) != NULL){
+		soma += encontrarAlturas(frase,atletas,tamanho);
 	}
 	return soma;
 }
-int main(){
-	Atleta atletas[1000];
-	char frase[1000];
-	FILE* teste = fopen("results.csv","r");
-	fgets(frase,1000,teste);
-	for(int i = 0; i < 1000;){
-		fgets(frase,1000,teste);
-		int ano;
-		sscanf(frase,"%d",&ano);
-		char nome[100];
-		char medalha[10];
-		pegarNomesMedalhistas(frase,nome,medalha);
-		if(medalha[0] != '\0' && ano == 2012){
-			strcpy(atletas[i].nome, nome);
-			strcpy(atletas[i].medalha,medalha);
-			atletas[i++].ano = ano;
-			contador++;
+int idAtleta(char* frase){
+	int aspas = 0;
+	int virgulas = 0;
+	int j = 0;
+	int k = 0;
+	char medalha[10];
+	char idP[10];
+	int id;
+	int len = strlen(frase);
+	for(int i = 0; i + 1 < len; i++){
+		if(frase[i] == '"'){
+			aspas = !aspas;	
+		}
+		if(frase[i] == ',' && !aspas){
+			virgulas++;
+		}
+		if(virgulas == 4){
+			medalha[j++] = frase[i+1];
+		}
+		if(virgulas == 6){
+			idP[k++] = frase[i + 1];
 		}
 	}
-	double altura = alturadosAtletas(atletas);
-	printf("%.2lf", altura / contador);
-	
-	for(int i = 0; i < 1000; i++){
-		printf("%s %s %d\n",atletas[i].medalha,atletas[i].nome, atletas[i].ano);
+	medalha[j <= 0 ? j : j - 1] = '\0';
+	idP[k - 1] = '\0';
+	if(medalha[0] != '\0'){
+		sscanf(idP,"%d",&id);
+		return id;
 	}
+	return 0;
+}
+int main(){
+	int* atletasMedal = malloc(100 * sizeof(int));
+	int capacidade = 100;
+	int tamanho = 0;
+	FILE* results = fopen("results.csv","r");
+	char frase[1000];
+	fgets(frase,1000,results);
+	while(fgets(frase,1000,results) != NULL){
+		if(tamanho == capacidade){
+			capacidade *= 2;
+			atletasMedal = realloc(atletasMedal,capacidade * sizeof(int));
+		}
+		int anoParam;
+		sscanf(frase,"%d",&anoParam);
+		if(anoParam == 2012){
+			int id = idAtleta(frase);
+			if(id != 0){
+				atletasMedal[tamanho++] = id;
+			}
+		}
+	}
+	int soma = fraseBIOS(atletasMedal,tamanho);
+	printf("%lf",(double)soma / contador);
 }
