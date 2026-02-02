@@ -5,11 +5,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 
 // Criacao de uma estrutura para identificar genero ('F' ou 'M')
 typedef struct {
     char sexo;
 } Sexo;
+
+// VER OPCAO DE UNIFICAR AS FUNCOES
 
 /* 
 Criação de uma estrutura que vai armazenar tipo de jogos (inverno/verão), 
@@ -23,129 +26,87 @@ typedef struct {
     int codigoEdicao;
 } ResultadosEdicao;
 
-/* codigo a ser analisado
-// utilização da função criada em alturamediaporano.c
-int idAtleta(char* frase){
+// adaptação da função criada em alturamediaporano.c
+// colunaDesejada vai determinar qual a coluna que vamos extrair os dados
+int idAtleta(char* frase, int colunaDesejada){
 	int aspas = 0;
-	int virgulas = 0;
-	int j = 0;
-	int k = 0;
-	char medalha[10];
-	char idP[10];
-	int id;
-	int len = strlen(frase);
-	for(int i = 0; i + 1 < len; i++){
-		if(frase[i] == '"'){
-			aspas = !aspas;	
+	// virgulas
+	int indiceID = 0;
+	int coluna = 0;
+	char idString[50];
+
+	// loop para percorrer a frase ('\0' indica o final da frase)
+	for(int i = 0; frase[i] != '\0'; i++){
+		// guardando o caracter atual pra nao precisar acessar frase[i] a todo momento
+		// e ajudar na compreensao
+		char charAtual = frase[i];
+
+		if(charAtual == '"'){ // checa se foram encontradas aspas
+			aspas = !aspas;	//passa a ignorar virgulas que estejam dentro das aspas 
 		}
-		if(frase[i] == ',' && !aspas){
-			virgulas++;
+		
+		else if(frase[i] == ',' && !aspas){ 
+			
+			if (coluna == colunaDesejada){ // quando chegamos na virgula da coluna desejada, retornamos o id
+				idString[indiceID] = '\0'; // fecha a string obtida
+				return atoi(idString); // retorna o id convertido para inteiro
+			}
+			coluna++; // passa pra proxima coluna se aquela ainda nao era a certa
+			indiceID = 0; // volta a escrita do idString pra primeira posicao
 		}
-		if(virgulas == 4){
-			medalha[j++] = frase[i+1];
-		}
-		if(virgulas == 6){
-			idP[k++] = frase[i + 1];
+		
+		else{
+
+			if (coluna == colunaDesejada){ // checa se estamos na coluna certa
+				if (isdigit(charAtual)){ // se o caractere for um numero...
+					idString[indiceID++] = charAtual; // guardamos ele no idString, sempre aumentando o indice
+				}
+			}
 		}
 	}
-	medalha[j <= 0 ? j : j - 1] = '\0';
-	idP[k - 1] = '\0';
-	if(medalha[0] != '\0'){
-		sscanf(idP,"%d",&id);
-		return id;
-	}
+	
 	return 0;
 }
 
-int fraseBIOS(int atletas[], int tamanho){
-	FILE* bios = fopen("bios.csv","r");
-	int soma = 0;
-	char frase[1000];
-	while(fgets(frase,1000,bios) != NULL){
-		soma += encontrarAlturas(frase,atletas,tamanho);
-	}
-	return soma;
-}
+// funcao para coletar sexo e edicao das olimpiadas
+void pegarTexto(char* frase, int colunaDesejada, char* destino){
+    int aspas = 0;
+    int coluna = 0; // semelhantes as da funcao anterior
+    int indice = 0;
+    destino[0] = '\0'; // inicializa o destino recebido (aponta para onde vamos enviar os textos)
 
-int funcaoDeAjuda(int id, int altura, int atletas[],int tamanho){
-	for(int i = 0; i < tamanho; i++){
-		if(id == atletas[i]){
-			contador++;
-			return altura;
-		}
-	}
-	return 0;
-}
+	// percorre a frase do arquivo 
+    for(int i = 0; frase[i] != '\0'; i++){
+        char charAtual = frase[i]; // armazena o ultimo caractere lido
 
-int encontrarGenero(char* frase, Sexo generos[], int tamanho){
-	int aspas = 0;
-	int virgulas = 0;
-	char altura[20];
-	int j = 0;
-	char idP[10];
-	int k = 0;
-	int id;
-	int medida;
-	int len = strlen(frase);
-	for(int i = 0; i + 1 < len; i++){
-		if(frase[i] == '"'){
-			aspas = !aspas;	
-		}
-		if(frase[i] == ',' && !aspas){
-			virgulas++;
-		}
-		if(virgulas == 7){
-			idP[j++] = frase[i+1];
-		}
-		if(virgulas == 8){
-			altura[k++] = frase[i+1];
-		}
-	}
-	idP[j - 1] = '\0';
-	sscanf(idP,"%d",&id);
-	altura[k == 0 ? k : k - 1] = '\0';
-	if(altura[0] != '\0'){
-		sscanf(altura,"%d",&medida);
-	} else {
-		medida = 0;
-	}
-	return funcaoDeAjuda(id,medida,atletas,tamanho);
-}
+        if(charAtual == '"'){
+            aspas = !aspas;	// filtra quando estamos lendo textos dentro de aspas, para ignorar as virgulas internas
+        }
 
-int idAtleta(char* frase){
-	int aspas = 0;
-	int virgulas = 0;
-	int j = 0;
-	int k = 0;
-	char medalha[10];
-	char idP[10];
-	int id;
-	int len = strlen(frase);
-	for(int i = 0; i + 1 < len; i++){
-		if(frase[i] == '"'){
-			aspas = !aspas;	
-		}
-		if(frase[i] == ',' && !aspas){
-			virgulas++;
-		}
-		if(virgulas == 4){
-			medalha[j++] = frase[i+1];
-		}
-		if(virgulas == 6){
-			idP[k++] = frase[i + 1];
+        else if(charAtual == ',' && !aspas){ // verifica se chegamos a uma virgula e nao estamos em aspas
+            if (coluna == colunaDesejada){
+                destino[indice] = '\0'; // Fecha a string (funciona por ser ponteiro)
+                return; // finaliza a funcao
+            }
+            coluna++;
+            indice = 0; // Reinicia buffer
+        }
+        else {
+            if (coluna == colunaDesejada){ // verifica se estamos na coluna certa
+                // copia o caractere, se nao for aspas
+                if(charAtual != '"') {
+					destino[indice++] = charAtual;
+            
+				}
+        	}
+    
 		}
 	}
-	medalha[j <= 0 ? j : j - 1] = '\0';
-	idP[k - 1] = '\0';
-	if(medalha[0] != '\0'){
-		sscanf(idP,"%d",&id);
-		return id;
-	}
-	return 0;
 }
-*/
 
 int main(){
+
+	// ADAPTAR A MAIN AS DUAS NOVAS FUNCOES
 
     // lista para conter os generos, que poderão ser acessados pelo athlete_id
     Sexo* listaGeneros = (Sexo*)calloc(200000, sizeof(Sexo));
