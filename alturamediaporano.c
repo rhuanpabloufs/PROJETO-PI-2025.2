@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 #include <stdlib.h>
+#include "olimpiadas.h"
+
 int contador = 0;
 int funcaoDeAjuda(int id, int altura, int atletas[],int tamanho){
 	for(int i = 0; i < tamanho; i++){
@@ -110,6 +111,27 @@ double encontrarMediaAltura(int ano){
 	int soma = fraseBIOS(atletasMedal,tamanho);
 	return (double)soma / contador;
 }
-int main(){
-	printf("%.2lf",encontrarMediaAltura(2008));
+
+// Resolvendo o problema de multiplas mains...
+// Função agora será chamada na main
+void resolver_q6_altura_media() {
+	int ano;
+	printf("\n--- Executando Questao 6 - Altura Media ---\n");
+	printf("Digite o ano da Olimpiada (ex: 2016): ");
+
+	// Permitir digitar o ano em vez de fixar
+	if (scanf("%d", &ano) == 1) {
+		// Zera o contador global antes de rodar
+		extern int contador;
+		contador = 0;
+
+		printf("Calculando altura media para %d... (Lendo arquivos novamente)\n", ano);
+		double media = encontrarMediaAltura(ano);
+
+		if (media > 0) {
+			printf("Resultado: %.2lf cm\n", media);
+		} else {
+			printf("Nenhum dado encontrado ou media é 0.\n");
+		}
+	}
 }

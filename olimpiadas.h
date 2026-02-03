@@ -11,5 +11,6 @@ typedef struct {
 } Atleta;
 
 Atleta* ler_atletas(const char* nome_arquivo, int* qtd_total);
+void resolver_q6_altura_media(); // Nova função criada
 
 #endif //OLIMPIADAS_H

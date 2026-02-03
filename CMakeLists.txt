@@ -6,5 +6,7 @@ add_executable(olimpiadas_app
         main.c
         csv_utils.c
         bios.csv
-        evolucaoMulheres.c
+        results.csv
+        # evolucaoMulheres.c // Comentado por enquanto para rodar a única main que temos
+        alturamediaporano.c
 )
