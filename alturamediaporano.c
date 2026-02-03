@@ -5,8 +5,9 @@
 int contador = 0;
 int funcaoDeAjuda(int id, int altura, int atletas[],int tamanho){
 	for(int i = 0; i < tamanho; i++){
-		if(id == atletas[i]){
+		if(id == atletas[i] && altura != 0){
 			contador++;
+			// printf("%d %d\n",altura,id);
 			return altura;
 		}
 	}
@@ -39,9 +40,7 @@ int encontrarAlturas(char* frase,int atletas[], int tamanho){
 	idP[j - 1] = '\0';
 	sscanf(idP,"%d",&id);
 	altura[k == 0 ? k : k - 1] = '\0';
-	if(altura[0] != '\0'){
-		sscanf(altura,"%d",&medida);
-	} else {
+	if(!altura[0] != '\0' || !sscanf(altura,"%d cm",&medida)){
 		medida = 0;
 	}
 	return funcaoDeAjuda(id,medida,atletas,tamanho);
@@ -49,8 +48,9 @@ int encontrarAlturas(char* frase,int atletas[], int tamanho){
 int fraseBIOS(int atletas[], int tamanho){
 	FILE* bios = fopen("bios.csv","r");
 	int soma = 0;
-	char frase[1000];
-	while(fgets(frase,1000,bios) != NULL){
+	char frase[2480];
+    fgets(frase,2480,bios);
+	while(fgets(frase,2480,bios) != NULL){
 		soma += encontrarAlturas(frase,atletas,tamanho);
 	}
 	return soma;
@@ -86,21 +86,21 @@ int idAtleta(char* frase){
 	}
 	return 0;
 }
-int main(){
+double encontrarMediaAltura(int ano){
 	int* atletasMedal = malloc(100 * sizeof(int));
 	int capacidade = 100;
 	int tamanho = 0;
 	FILE* results = fopen("results.csv","r");
-	char frase[1000];
-	fgets(frase,1000,results);
-	while(fgets(frase,1000,results) != NULL){
+	char frase[2480];
+	fgets(frase,2480,results);
+	while(fgets(frase,2480,results) != NULL){
 		if(tamanho == capacidade){
 			capacidade *= 2;
 			atletasMedal = realloc(atletasMedal,capacidade * sizeof(int));
 		}
 		int anoParam;
 		sscanf(frase,"%d",&anoParam);
-		if(anoParam == 2012){
+		if(anoParam == ano){
 			int id = idAtleta(frase);
 			if(id != 0){
 				atletasMedal[tamanho++] = id;
@@ -108,5 +108,8 @@ int main(){
 		}
 	}
 	int soma = fraseBIOS(atletasMedal,tamanho);
-	printf("%lf",(double)soma / contador);
+	return (double)soma / contador;
+}
+int main(){
+	printf("%.2lf",encontrarMediaAltura(2008));
 }
