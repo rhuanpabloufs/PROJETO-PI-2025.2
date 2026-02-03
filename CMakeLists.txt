@@ -7,6 +7,7 @@ add_executable(olimpiadas_app
         csv_utils.c
         bios.csv
         results.csv
-        # evolucaoMulheres.c // Comentado por enquanto para rodar a única main que temos
+        evolucaoMulheres.c
+        # Retirando comentário para fazer a adaptção da Q17...
         alturamediaporano.c
 )

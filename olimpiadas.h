@@ -11,6 +11,9 @@ typedef struct {
 } Atleta;
 
 Atleta* ler_atletas(const char* nome_arquivo, int* qtd_total);
+char* get_dado(char** cursor); // função para leitura do arquivo criada no csv_utils
 void resolver_q6_altura_media(); // Nova função criada
+void resolver_q17_evolucao_mulheres(Atleta* atletas, int qtd_total_atletas); // Nova função para a Q17, que recebe o vetor carregado para cruzarmos os dados
+
 
 #endif //OLIMPIADAS_H

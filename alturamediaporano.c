@@ -109,6 +109,7 @@ double encontrarMediaAltura(int ano){
 		}
 	}
 	int soma = fraseBIOS(atletasMedal,tamanho);
+	free(atletasMedal); // Cuidando das memórias dos nossos computadores...
 	return (double)soma / contador;
 }
 
@@ -118,6 +119,7 @@ void resolver_q6_altura_media() {
 	int ano;
 	printf("\n--- Executando Questao 6 - Altura Media ---\n");
 	printf("Digite o ano da Olimpiada (ex: 2016): ");
+	printf(" ");
 
 	// Permitir digitar o ano em vez de fixar
 	if (scanf("%d", &ano) == 1) {
@@ -131,7 +133,7 @@ void resolver_q6_altura_media() {
 		if (media > 0) {
 			printf("Resultado: %.2lf cm\n", media);
 		} else {
-			printf("Nenhum dado encontrado ou media é 0.\n");
+			printf("Nenhum dado encontrado ou media eh 0.\n");
 		}
 	}
 }
