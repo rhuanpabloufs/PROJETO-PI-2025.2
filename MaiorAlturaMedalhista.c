@@ -7,12 +7,15 @@ typedef struct {
     int altura;
     char nome[50];
     char medalha[50];
+    char esporte[50];
 } Atleta;
+// struct de Atletas que guarda as informações necessárias para que se gere uma saída satisfatória.
 int comparar(const void* atl1, const void* atl2){
     Atleta a1 = *(Atleta*) atl1;
     Atleta a2 = *(Atleta*) atl2;
     return a2.altura - a1.altura; 
 }
+// Função de Comparação decrescente das alturas para o qsort.
 int EncontrarAltura(char* frase, int* id){
     int aspas = 0;
     int virgulas = 0;
@@ -45,6 +48,8 @@ int EncontrarAltura(char* frase, int* id){
         return 0;
     }
 }
+// É um buscador de dados e separação de campos manual, utilizando das virgulas que separam os dados
+// dentro do bios.csv para extrair o id e a altura de alguns atletas. 
 void AbrirBios(Atleta* atletas, int tamanho){
     FILE* bios = fopen("bios.csv","r");
     char frase[2000];
@@ -57,18 +62,22 @@ void AbrirBios(Atleta* atletas, int tamanho){
             if(id == atletas[i].id){
                 atletas[i].altura = altura;
                 encontrado = 1;
+                // encontrado servindo apenas para que nao seja iterado o Array inteiro, mesmo apos encontrado o atleta procurado.
             }
         }
     }
-
 }
-void parserResults(char* frase, int* ano, int* id, char* nome, char* medalha){
+/* Função que abre o arquivo bios.csv e capta as frases que sao passadas como
+parametros para a separação de campos, ocorrida na função anterior, e após isso preenche a altura
+dos atletas alocados em um Array, que é gerado posteriormente */
+void parserResults(char* frase, int* ano, int* id, char* nome, char* medalha, char* esporte){
     int aspas = 0;
     int virgulas = 0;
     int tamNome = 0;
     int tamMedalha = 0;
     char idP[10];
     int idTam = 0;
+    int esporteTam = 0;
     int len = strlen(frase);
     sscanf(frase,"%d",ano);
     for(int i = 0; i < len; i++){
@@ -87,13 +96,19 @@ void parserResults(char* frase, int* ano, int* id, char* nome, char* medalha){
         if(virgulas == 6){
             idP[idTam++] = frase[i+1];
         }
+        if(virgulas == 8){
+            esporte[esporteTam++] = frase[i+1];
+        }
     }
+    esporte[esporteTam - 1] = '\0';
     nome[tamNome - 1] = '\0';
     medalha[tamMedalha - 1] = '\0';
     idP[idTam - 1] = '\0';
     sscanf(idP,"%d",id);
 }
-int main(){
+/*Mesma ideia de separção manual de campos por virgulas, agora no results.csv, assim podemos captar nome, medalha ganhada, ID e esporte,
+dados esses que preenche o Array dinamico de Atletas, para que possa ser respondido nome, medalha ganhada, e esporte participado, não apenas a altura*/
+void MaiorAltura(int anoP){
     FILE* results = fopen("results.csv","r");
     char frase[2000];
     int tamanho = 0;
@@ -107,13 +122,52 @@ int main(){
         }
         Atleta atleta;
         int ano;
-        parserResults(frase,&ano,&atleta.id,atleta.nome,atleta.medalha);
-        if(ano == 2012 && atleta.medalha[0] != '\0'){
+        parserResults(frase,&ano,&atleta.id,atleta.nome,atleta.medalha,atleta.esporte);
+        if(ano == anoP && atleta.medalha[0] != '\0'){
             atletas[tamanho++] = atleta;
         }
     }
     AbrirBios(atletas, tamanho);
     int (*cmp)(const void*, const void*) = comparar;
     qsort(atletas,tamanho,sizeof(Atleta),cmp);
-    printf("%s %s %d %d",atletas[0].nome,atletas[0].medalha,atletas[0].altura,atletas[0].id); 
+    printf("O atleta de %s, %s, de altura %d cm, é o medalhista mais alto das olimpiadas de %d, tendo ganhado uma medalha de %s.",atletas[0].esporte,atletas[0].nome,atletas[0].altura,anoP,atletas[0].medalha); 
+    free(atletas);
+}
+// Função core do programa, pega a frase o results.csv, aloca dinamicamente um vetor de Atletas, e preenche esses dados com a Função ParseResults
+// Logos após, usa a bios para preencher a altura, utilizando no final um sort decrescente por altura, para deixar o atleta mais alto exatamente
+// no primeiro espaço.
+void MaiorAlturaHistória(){
+    FILE* results = fopen("results.csv","r");
+    char frase[2000];
+    int tamanho = 0;
+    int capacidade = 100;
+    Atleta* atletas = malloc(capacidade * sizeof(Atleta));
+    fgets(frase,2000,results);
+    while(fgets(frase,2000,results) != NULL){
+        if(tamanho == capacidade){
+            capacidade += 100;
+            atletas = realloc(atletas, capacidade * sizeof(Atleta));
+        }
+        Atleta atleta;
+        int ano;
+        parserResults(frase,&ano,&atleta.id,atleta.nome,atleta.medalha,atleta.esporte);
+        if(atleta.medalha[0] != '\0'){
+            atletas[tamanho++] = atleta;
+        }
+    }
+    AbrirBios(atletas, tamanho);
+    int (*cmp)(const void*, const void*) = comparar;
+    qsort(atletas,tamanho,sizeof(Atleta),cmp);
+    printf("O atleta de %s, %s é o medalhista mais alto da historia, com altura de %d cm, tendo ganhado a medalha de %s.",atletas[0].esporte,atletas[0].nome,atletas[0].altura,atletas[0].medalha); 
+    free(atletas);
+}
+// Mesma função, mas sem o ano como parametro, o que permite iterar todo o arquivo em busca do medalhista mais alto.
+int main(){
+    int ano;
+    printf("Digite o ano desejado ou digite qualquer outra coisa para toda historia: ");
+    if(scanf("%d",&ano)){
+        MaiorAltura(ano);
+    } else {
+        MaiorAlturaHistória();
+    }
 }
