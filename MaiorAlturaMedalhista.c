@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 #include <stdlib.h>
 typedef struct {
     int id;
@@ -158,16 +157,27 @@ void MaiorAlturaHistória(){
     AbrirBios(atletas, tamanho);
     int (*cmp)(const void*, const void*) = comparar;
     qsort(atletas,tamanho,sizeof(Atleta),cmp);
-    printf("O atleta de %s, %s é o medalhista mais alto da historia, com altura de %d cm, tendo ganhado a medalha de %s.",atletas[0].esporte,atletas[0].nome,atletas[0].altura,atletas[0].medalha); 
+    printf("O atleta de %s, %s eh o medalhista mais alto da historia, com altura de %d cm, tendo ganhado a medalha de %s.",atletas[0].esporte,atletas[0].nome,atletas[0].altura,atletas[0].medalha);
     free(atletas);
 }
 // Mesma função, mas sem o ano como parametro, o que permite iterar todo o arquivo em busca do medalhista mais alto.
-int main(){
+
+// Substituí a main por uma função void para integrar no arquivo main
+void resolver_maior_altura_medalhista() {
     int ano;
+    printf("\n--- Questao: Maior Altura de Medalhista ---\n");
     printf("Digite o ano desejado ou digite qualquer outra coisa para toda historia: ");
-    if(scanf("%d",&ano)){
+
+    // Lógica original preservada
+    if (scanf("%d", &ano)) {
         MaiorAltura(ano);
     } else {
+        // Se entrou aqui, o usuário digitou algum outro texto
+        // O scanf falhou e deixou o texto no buffer.
+        // Precisamos limpar esse texto, para não bagunçar o menu da main
+        char c;
+        while ((c = getchar()) != '\n' && c != EOF);
+
         MaiorAlturaHistória();
     }
 }

@@ -34,7 +34,7 @@ int encontrarAlturas(char* frase,int atletas[], int tamanho){
 			virgulas++;
 		}
 		if(virgulas == 7){
-			idP[j++] = frase[i+1];
+			idP[idTam++] = frase[i+1]; // Mudança do nome da variável
 		}
 		if(virgulas == 8){
 			altura[alturaTam++] = frase[i+1];

@@ -10,4 +10,5 @@ add_executable(olimpiadas_app
         evolucaoMulheres.c
         # Retirando comentário para fazer a adaptção da Q17...
         alturamediaporano.c
+        MaiorAlturaMedalhista.c
 )
