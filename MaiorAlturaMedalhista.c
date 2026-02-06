@@ -129,13 +129,13 @@ void MaiorAltura(int anoP){
     AbrirBios(atletas, tamanho);
     int (*cmp)(const void*, const void*) = comparar;
     qsort(atletas,tamanho,sizeof(Atleta),cmp);
-    printf("O atleta de %s, %s, de altura %d cm, é o medalhista mais alto das olimpiadas de %d, tendo ganhado uma medalha de %s.",atletas[0].esporte,atletas[0].nome,atletas[0].altura,anoP,atletas[0].medalha); 
+    printf("O atleta de %s, %s, de altura %d cm, eh o medalhista mais alto das olimpiadas de %d, tendo ganhado uma medalha de %s.",atletas[0].esporte,atletas[0].nome,atletas[0].altura,anoP,atletas[0].medalha);
     free(atletas);
 }
 // Função core do programa, pega a frase o results.csv, aloca dinamicamente um vetor de Atletas, e preenche esses dados com a Função ParseResults
 // Logos após, usa a bios para preencher a altura, utilizando no final um sort decrescente por altura, para deixar o atleta mais alto exatamente
 // no primeiro espaço.
-void MaiorAlturaHistória(){
+void MaiorAlturaHistoria(){ // acento no nome não compila
     FILE* results = fopen("results.csv","r");
     char frase[2000];
     int tamanho = 0;
@@ -178,6 +178,6 @@ void resolver_maior_altura_medalhista() {
         char c;
         while ((c = getchar()) != '\n' && c != EOF);
 
-        MaiorAlturaHistória();
+        MaiorAlturaHistoria();
     }
 }

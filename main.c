@@ -33,6 +33,7 @@ int main() {
         printf("\n1. Altura Media (Por Ano)         ");
         printf("\n2. Evolucao Mulheres (Por Ano)    ");
         printf("\n3. Maior Altura Medalhista        ");
+        printf("\n4. Esportes com Mulheres ao longo dos anos          "); // Nova questão
         printf("\n0. Sair");
         printf("\n------------------------------------------------");
         printf("\nEscolha uma opcao: ");
@@ -67,6 +68,14 @@ int main() {
             case 3:
                 // Nova Questão
                 resolver_maior_altura_medalhista();
+                break;
+
+            case 4:
+                if (meus_atletas != NULL) {
+                    resolver_evo_esportes_femininos(meus_atletas, qtd_atletas);
+                } else {
+                    printf("Base de dados nao carregada!\n");
+                }
                 break;
 
             default:

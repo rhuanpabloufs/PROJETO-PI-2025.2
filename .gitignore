@@ -30,3 +30,7 @@ cmake-build-*/
 # Sistema Operacional
 .DS_Store
 Thumbs.db
+
+# Ignorar arquivos de dados grandes
+bios.csv
+results.csv

@@ -8,7 +8,7 @@ add_executable(olimpiadas_app
         bios.csv
         results.csv
         evolucaoMulheres.c
-        # Retirando comentário para fazer a adaptção da Q17...
         alturamediaporano.c
         MaiorAlturaMedalhista.c
+        evo_esportes_femininos.c
 )
