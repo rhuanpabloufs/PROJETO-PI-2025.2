@@ -1,6 +1,6 @@
 # Sistema de Análise de Dados Olímpicos
 
-Este projeto foi desenvolvido na disciplina de **Programação Imperativa** da **Universidade Federal  de Sergipe**, pelo professor **Kalil Araújo Bispo**. O software processa grandes bases de dados históricas das Olimpíadas (arquivos CSV) para gerar estatísticas e insights sobre atletas, medalhas e a evolução dos jogos.
+Este projeto foi desenvolvido na disciplina de **Programação Imperativa** da **Universidade Federal  de Sergipe**, solicitado pelo professor **Kalil Araújo Bispo**. O software processa grandes bases de dados históricas das Olimpíadas (arquivos CSV) para gerar estatísticas e insights sobre atletas, medalhas e a evolução dos jogos.
 
 ## Funcionalidades do Sistema
 
