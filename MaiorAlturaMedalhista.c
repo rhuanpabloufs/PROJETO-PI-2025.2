@@ -18,7 +18,7 @@ int comparar(const void* atl1, const void* atl2){
 int EncontrarAltura(char* frase, int* id){
     int aspas = 0;
     int virgulas = 0;
-    int altura;
+    int altura = 0;
     int len = strlen(frase);
     char alturaParam[50];
     char idParam[50];
@@ -38,10 +38,20 @@ int EncontrarAltura(char* frase, int* id){
             idParam[idTam++] = frase[i+1];
         }
     }
+
+    // Proteção contra buffer negativo se o campo estiver vazio
+    if (alturaTam > 0) alturaParam[alturaTam - 1] ='\0';
+    else alturaParam[0] = '\0';
+
+    if (idTam > 0) idParam[idTam - 1] = '\0';
+    else idParam[0] = '\0';
+
     alturaParam[alturaTam - 1] ='\0';
     idParam[idTam - 1] = '\0';
     sscanf(idParam,"%d",id);
-    if(sscanf(alturaParam,"%d cm",&altura)){
+    // O sscanf retorna a quantidade de itens lidos com sucesso.
+    // Só aceitamos se ele retornar 1.
+    if((sscanf(alturaParam,"%d cm",&altura)) == 1){
         return altura;
     } else {
         return 0;
@@ -120,6 +130,7 @@ void MaiorAltura(int anoP){
             atletas = realloc(atletas, capacidade * sizeof(Atleta));
         }
         Atleta atleta;
+        atleta.altura = 0;
         int ano;
         parserResults(frase,&ano,&atleta.id,atleta.nome,atleta.medalha,atleta.esporte);
         if(ano == anoP && atleta.medalha[0] != '\0'){
@@ -148,6 +159,7 @@ void MaiorAlturaHistoria(){ // acento no nome não compila
             atletas = realloc(atletas, capacidade * sizeof(Atleta));
         }
         Atleta atleta;
+        atleta.altura = 0;
         int ano;
         parserResults(frase,&ano,&atleta.id,atleta.nome,atleta.medalha,atleta.esporte);
         if(atleta.medalha[0] != '\0'){

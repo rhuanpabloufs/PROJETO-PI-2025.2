@@ -6,7 +6,8 @@
 int contador = 0;
 int funcaoDeAjuda(int id, int altura, int atletas[],int tamanho){
 	for(int i = 0; i < tamanho; i++){
-		if(id == atletas[i] && altura != 0){
+		// O atleta precisa estar na lista E ter uma altura valida
+		if(id == atletas[i] && altura > 0){
 			contador++;
 			return altura;
 		}
@@ -21,29 +22,39 @@ int encontrarAlturas(char* frase,int atletas[], int tamanho){
 	int virgulas = 0;
 	char altura[20];
 	int idTam = 0;
-	char idP[10];
+	char idP[20];
 	int alturaTam = 0;
-	int id;
-	int medida;
+	int id = 0;
+	int medida = 0;
 	int len = strlen(frase);
-	for(int i = 0; i + 1 < len; i++){
+	for(int i = 0; i < len; i++) {
 		if(frase[i] == '"'){
 			aspas = !aspas;	
 		}
-		if(frase[i] == ',' && !aspas){
+		if(frase[i] == ',' && !aspas) {
 			virgulas++;
+			continue; // pula a vírgula para não ficar no buffer
 		}
-		if(virgulas == 7){
-			idP[idTam++] = frase[i+1]; // Mudança do nome da variável
+		// Se nao eh virgula nem aspas, adiciona ao buffer correto
+		if(virgulas == 7) {
+			if(idTam < 19) idP[idTam++] = frase[i];
 		}
-		if(virgulas == 8){
-			altura[alturaTam++] = frase[i+1];
+		if(virgulas == 8) {
+			if(alturaTam < 19) altura[alturaTam++] = frase[i];
 		}
 	}
-	idP[idTam - 1] = '\0';
-	sscanf(idP,"%d",&id);
-	altura[alturaTam == 0 ? alturaTam : alturaTam - 1] = '\0';
-	if(!altura[0] != '\0' || !sscanf(altura,"%d cm",&medida)){
+	idP[idTam] = '\0';	// idP[-1] ERRO - Correção
+	altura[alturaTam] = '\0';
+
+	// Leitura segura
+	if(idTam > 0) {
+		sscanf(idP, "%d", &id);
+	}
+
+	// Leitura segura da altura
+	if(alturaTam > 0 && sscanf(altura, "%d cm", &medida) == 1) {
+		// medida lida ok
+	} else {
 		medida = 0;
 	}
 	return funcaoDeAjuda(id,medida,atletas,tamanho);
@@ -54,12 +65,14 @@ int encontrarAlturas(char* frase,int atletas[], int tamanho){
 }
 int fraseBIOS(int atletas[], int tamanho){
 	FILE* bios = fopen("bios.csv","r");
+	if(!bios) return 0; // Seguranca se falhar abrir
 	int soma = 0;
 	char frase[2480];
     fgets(frase,2480,bios);
 	while(fgets(frase,2480,bios) != NULL){
 		soma += encontrarAlturas(frase,atletas,tamanho);
 	}
+	fclose(bios);
 	return soma;
 	// função separada para a leitura de bios e a passagem de cada linha de fgets como
 	// parametro de encontrarAlturas.
@@ -69,29 +82,34 @@ int idAtleta(char* frase){
 	int virgulas = 0;
 	int medalhaTam = 0;
 	int	idTam = 0;
-	char medalha[10];
-	char idP[10];
-	int id;
+	char medalha[50];
+	char idP[20];
+	int id = -1; // inicializa com valor invalido
 	int len = strlen(frase);
-	for(int i = 0; i + 1 < len; i++){
+	for(int i = 0; i < len; i++){ // o +1 pulava o ultimo char
 		if(frase[i] == '"'){
 			aspas = !aspas;	
 		}
 		if(frase[i] == ',' && !aspas){
 			virgulas++;
+			continue; // virgula era gravada dentro do id
 		}
 		if(virgulas == 4){
-			medalha[medalhaTam++] = frase[i+1];
+			if(medalhaTam < 49) medalha[medalhaTam++] = frase[i];
 		}
 		if(virgulas == 6){
-			idP[idTam++] = frase[i + 1];
+			if(idTam < 19) idP[idTam++] = frase[i];
 		}
 	}
-	medalha[medalhaTam <= 0 ? medalhaTam : medalhaTam - 1] = '\0';
-	idP[idTam - 1] = '\0';
-	if(medalha[0] != '\0'){
-		sscanf(idP,"%d",&id);
-		return id;
+	medalha[medalhaTam] = '\0';
+	idP[idTam] = '\0';
+
+	// Verifica se tem medalha (nao eh vazia e nem NA)
+	if(medalhaTam > 0 && strcmp(medalha, "NA") != 0){
+		// Tenta converter o ID
+		if(sscanf(idP, "%d", &id) == 1){
+			return id;
+		}
 	}
 	return -1;
 	/* Função de separação de campos que funciona no mesmo modo da anterior,
@@ -104,15 +122,33 @@ double encontrarMediaAltura(int ano){
 	int capacidade = 100;
 	int tamanho = 0;
 	FILE* results = fopen("results.csv","r");
+	if (results == NULL) { // Correção: segurança caso arquivo falhe
+		free(atletasMedal);
+		return 0.0;
+	}
+
 	char frase[2480];
 	fgets(frase,2480,results);
+
 	while(fgets(frase,2480,results) != NULL){
 		if(tamanho == capacidade){
 			capacidade *= 2;
-			atletasMedal = realloc(atletasMedal,capacidade * sizeof(int));
+			// correção: uso de ponteiro temporário para evitar perda de dados
+			int* temp = realloc(atletasMedal, capacidade * sizeof(int));
+			if (temp == NULL) {
+				free(atletasMedal);
+				fclose(results);
+				return 0.0;
+			}
+			atletasMedal = temp;
 		}
-		int anoParam;
-		sscanf(frase,"%d",&anoParam);
+		int anoParam = 0;
+		// tenta ler normal ou com aspas para garantir
+		if(frase[0] == '"') {
+			sscanf(frase, "\"%d\"", &anoParam);
+		} else {
+			sscanf(frase, "%d", &anoParam);
+		}
 		if(anoParam == ano){
 			int id = idAtleta(frase);
 			if(id != -1){
@@ -120,12 +156,18 @@ double encontrarMediaAltura(int ano){
 			}
 		}
 	}
+
+	fclose(results); // obrigatório fechar o arquivo
 	// while que lê results inteiro, gera o array com os IDs de atletas medalhistas.
 	int soma = fraseBIOS(atletasMedal,tamanho);
 	// utilizando o array gerado, gera a soma de todas as alturas.
 
 	free(atletasMedal); // Cuidando das memórias dos nossos computadores...
-	return (double)soma / contador;
+	if (contador == 0) {
+		return 0.0;
+	} else {
+		return (double)soma / contador;
+	}
 	// o return com a media calculada.
 }
 
@@ -135,7 +177,6 @@ void resolver_q6_altura_media() {
 	int ano;
 	printf("\n--- Executando Questao 6 - Altura Media ---\n");
 	printf("Digite o ano da Olimpiada (ex: 2016): ");
-	printf(" ");
 
 	// Permitir digitar o ano em vez de fixar
 	if (scanf("%d", &ano) == 1) {
@@ -143,7 +184,7 @@ void resolver_q6_altura_media() {
 		extern int contador;
 		contador = 0;
 
-		printf("Calculando altura media para %d... (Lendo arquivos novamente)\n", ano);
+		printf("Calculando altura media para %d... (Aguarde)\n", ano);
 		double media = encontrarMediaAltura(ano);
 
 		if (media > 0) {
@@ -151,5 +192,8 @@ void resolver_q6_altura_media() {
 		} else {
 			printf("Nenhum dado encontrado ou media eh 0.\n");
 		}
+	} else {
+		char c;
+		while ((c = getchar()) != '\n' && c != EOF);
 	}
 }
