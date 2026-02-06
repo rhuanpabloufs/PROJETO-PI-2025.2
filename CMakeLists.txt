@@ -5,8 +5,8 @@ set(CMAKE_C_STANDARD 99)
 add_executable(olimpiadas_app
         main.c
         csv_utils.c
-        bios.csv
-        results.csv
+        cmake-build-debug/bios.csv
+        cmake-build-debug/results.csv
         evolucaoMulheres.c
         alturamediaporano.c
         MaiorAlturaMedalhista.c

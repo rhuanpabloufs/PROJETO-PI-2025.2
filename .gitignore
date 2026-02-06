@@ -32,5 +32,5 @@ cmake-build-*/
 Thumbs.db
 
 # Ignorar arquivos de dados grandes
-bios.csv
-results.csv
+cmake-build-debug/bios.csv
+cmake-build-debug/results.csv
