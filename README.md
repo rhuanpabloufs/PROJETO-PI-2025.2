@@ -1,4 +1,4 @@
-# Sistema de Análise de Dados Olímpicos
+# Sistema de Análise de Dados Olímpicos 🥉🥈🥇
 
 Este projeto foi desenvolvido na disciplina de **Programação Imperativa** da **Universidade Federal  de Sergipe**, solicitado pelo professor **Kalil Araújo Bispo**. O software processa grandes bases de dados históricas das Olimpíadas (arquivos CSV) para gerar estatísticas e insights sobre atletas, medalhas e a evolução dos jogos.
 
@@ -10,7 +10,7 @@ O programa conta com um menu interativo no console que oferece as seguintes aná
     * Calcula a altura média de todos os atletas medalhistas em um ano específico digitado pelo usuário.
 2.  **Evolução da Participação Feminina** (Módulo: `evolucaoMulheres.c`)
     * Gera uma tabela cronológica exibindo a quantidade absoluta de mulheres em cada edição dos jogos.
-3.  **Maior Medalhista da História** (Módulo: `MaiorAlturaMedalhista.c`)
+3.  **Medalhista Mais Alto** (Módulo: `MaiorAlturaMedalhista.c`)
     * Identifica o atleta medalhista mais alto de uma edição específica ou de toda a história olímpica.
 4.  **Diversidade de Esportes Femininos** (Módulo: `evo_esportes_femininos.c`)
     * Analisa o crescimento da quantidade de modalidades distintas que tiveram participação feminina ao longo dos anos.
@@ -29,6 +29,7 @@ O programa conta com um menu interativo no console que oferece as seguintes aná
 
 ### Pré-requisitos
 * Compilador C (GCC) ou CMake.
+* **Gnuplot:** É necessário ter o Gnuplot instalado e acessível via terminal (PATH) para gerar gráficos.
 * **Importante:** Os arquivos de dados `bios.csv` e `results.csv` devem estar **na mesma pasta** do executável gerado.
 
 ### Opção 1: Compilação via Terminal (GCC)

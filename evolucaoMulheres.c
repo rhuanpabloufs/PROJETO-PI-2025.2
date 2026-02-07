@@ -7,6 +7,15 @@
 #include <ctype.h>
 #include "olimpiadas.h"
 
+// configuracao para que o compilador possa identificar o sistema operacional
+#ifdef _WIN32 // eh windows?
+    #define POPEN _popen // define que _popen abre processos do gnuplot (padrao windows)
+    #define PCLOSE _pclose // "  " _pclose 
+#else
+    #define POPEN popen // nao sendo windows, utiliza popen (padrao linux) 
+    #define PCLOSE pclose
+#endif
+
 // Criacao de uma estrutura para identificar genero ('F' ou 'M')
 typedef struct {
     char sexo;
@@ -130,6 +139,58 @@ void pegarTexto(char* frase, int colunaDesejada, char* destino) {
 	}
 }
 
+// Funcao utilizada para plotar o grafico de evolucaoMulheres
+void plotar_grafico_evolucao(ResultadosEdicao* lista_resultados, int qtd) {
+    printf("\nGerando grafico com Gnuplot...\n");
+    
+    // POPEN abre um processo externo como foi definido
+	// -persistant mantem a janela do grafico aberta
+    FILE *gp = POPEN("gnuplot -persistent", "w"); 
+
+    if (gp) { // verifica se o gnuplot abriu sem problemas
+        
+		// Configuracoes do grafico
+        fprintf(gp, "set title 'Evolucao da Participacao Feminina'\n"); // titulo
+        fprintf(gp, "set xlabel 'Ano'\n"); // nome do eixo x
+        fprintf(gp, "set ylabel 'Qtd Mulheres'\n"); // nome do eixo y
+        fprintf(gp, "set key top left box\n"); // Adiciona uma legenda em formato de caixa para diferenciar verao e inverno
+
+        // Configuracao das linhas 
+        // plot -> comando para desenhar
+		// '-' -> indica que os dados do grafico vao ser colocados a seguir
+		// using 1:2 -> primeira coluna x e segunda coluna y
+		// lc rgb 'cor' -> define a cor da linha
+		// a virgula entre as linhas serve para separar os graficos, ja que os 
+        fprintf(gp, "plot '-' using 1:2 title 'Jogos de Verao' with linespoints lw 2 lc rgb 'orange', \
+                           '' using 1:2 title 'Jogos de Inverno' with linespoints lw 2 lc rgb 'blue'\n");
+
+        // loop para coletar e enviar os dados de verao
+        for (int i = 0; i < qtd; i++) {
+            // checa se eh olimpiada de verao
+            if (strstr(lista_resultados[i].estacao, "Summer") != NULL) {
+				// escreve os numeros no gnuplot
+                fprintf(gp, "%d %d\n", lista_resultados[i].anoDeOcorrencia, lista_resultados[i].qtdMulheres);
+            }
+        }
+        fprintf(gp, "e\n"); // quando a letra 'e' eh enviada ao gnuplot ele entende que acabaram os dados (da primeira linha) (end)
+
+        // o mesmo para os dados de inverno
+        for (int i = 0; i < qtd; i++) {
+            // checa se eh olimpiada de inverno
+            if (strstr(lista_resultados[i].estacao, "Winter") != NULL) {
+				// escreve os numeros no gnuplot
+                fprintf(gp, "%d %d\n", lista_resultados[i].anoDeOcorrencia, lista_resultados[i].qtdMulheres);
+            }
+        }
+        fprintf(gp, "e\n"); // indica o fim da segunda e ultima linha
+
+        PCLOSE(gp); // Fecha o processo
+        printf("Grafico gerado com sucesso!\n");
+	} else {
+    printf("ERRO: Gnuplot nao encontrado ou falha ao abrir pipe.\n");
+	}
+}
+
 // FUNÇÃO PRINCIPAL PARA SER CHAMADA NA MAIN
 void resolver_q17_evolucao_mulheres(Atleta* atletas, int qtd_total_atletas) {
 
@@ -222,7 +283,15 @@ void resolver_q17_evolucao_mulheres(Atleta* atletas, int qtd_total_atletas) {
                 resultados[i].qtdMulheres);
     }
 
-	// Minha memória, Victor, pelo amor de Deus!
+    int exibirGrafico = 0; // variavel para coletar desejo do usuario em ver o grafico
+    printf("\nDeseja ver o grafico? (1-Sim / 0-Nao): ");
+    scanf("%d", &exibirGrafico);
+
+    if (exibirGrafico == 1) {
+        plotar_grafico_evolucao(resultados, qtd_edicoes);
+    }
+
+	// Memoria limpa =)
     free(sexo_por_id);
     free(ultimaEdicaoParticipada);
     free(resultados);
