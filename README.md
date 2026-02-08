@@ -21,6 +21,7 @@ O programa conta com um menu interativo no console que oferece as seguintes aná
 * `main.c`: Ponto de entrada, menu e gerenciamento de memória.
 * `olimpiadas.h`: Cabeçalho (Header) que conecta todos os módulos.
 * `csv_utils.c`: Biblioteca auxiliar para leitura de CSV.
+* `plotagemGraficos.c`: Arquivo que auxilia na plotagem dos gráficos de forma limpa. 
 * `*.c`: Arquivos com a lógica específica de cada questão.
 
 ---
