@@ -1,19 +1,10 @@
+// QUESTAO RELACIONADA COM O ARQUIVO: Calcular quantos esportes distintos tiveram participação feminina em cada edição das Olimpíadas
+
+// INCLUSAO DAS BIBLIOTECAS
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "olimpiadas.h"
-
-// Estrutura para controlar os esportes por edição
-typedef struct {
-    int codigoEdicao;       // Seguindo a lógica criada anteriormente 20161 (Rio/Verão)
-    char estacao[10];
-    int ano;
-    // Lista de nomes de esportes já contados nesta edição (matriz de strings)
-    // Suporta até 200 esportes diferentes por edição (valor seguro)
-    char esportes_vistos[200][50];
-    int qtd_esportes_distintos;
-} EdicaoEsportes;
-
 
 // Função de Victor para pegar texto de uma coluna específica
 void pegarTexto_reuso(char* frase, int colunaDesejada, char* destino) {
@@ -84,7 +75,6 @@ int comparar_edicoes_esp(const void* a, const void* b) {
 }
 
 // FUNÇÃO PRINCIPAL
-
 void resolver_evo_esportes_femininos(Atleta* atletas, int qtd_total_atletas) {
     printf("\n--- CALCULO DE ESPORTES DISTINTOS COM MULHERES ---\n");
     printf("Processando dados...\n");
@@ -163,6 +153,15 @@ void resolver_evo_esportes_femininos(Atleta* atletas, int qtd_total_atletas) {
             lista_edicoes[i].ano,
             lista_edicoes[i].estacao,
             lista_edicoes[i].qtd_esportes_distintos);
+    }
+
+    int visualizarGrafico = 0;
+    printf("\nDeseja ver o grafico da questao? (1 - sim / 0 - nao): ");
+    scanf("%d", &visualizarGrafico);
+
+    if (visualizarGrafico == 1){
+        // chamada da funcao plotar grafico com 2, simbolizando o arquivo evo_esportes_femininos
+        plotar_grafico_evolucao(lista_edicoes, qtd_edicoes, 2);
     }
 
     free(sexo_por_id);

@@ -11,4 +11,5 @@ add_executable(olimpiadas_app
         alturamediaporano.c
         MaiorAlturaMedalhista.c
         evo_esportes_femininos.c
+        plotagemGraficos.c
 )

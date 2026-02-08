@@ -36,7 +36,7 @@ O programa conta com um menu interativo no console que oferece as seguintes aná
 Se você estiver usando o terminal (VS Code, PowerShell, Linux), execute o comando abaixo para compilar todos os módulos juntos:
 
 ```bash
-gcc main.c csv_utils.c alturamediaporano.c evolucaoMulheres.c MaiorAlturaMedalhista.c evo_esportes_femininos.c -o olimpiadas
+gcc main.c csv_utils.c alturamediaporano.c evolucaoMulheres.c MaiorAlturaMedalhista.c evo_esportes_femininos.c plotagemGraficos.c -o olimpiadas
 ```
 
 Para executar:
