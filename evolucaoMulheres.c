@@ -6,12 +6,6 @@
 #include <string.h>
 #include <ctype.h>
 #include "olimpiadas.h"
-
-// Criacao de uma estrutura para identificar genero ('F' ou 'M')
-typedef struct {
-    char sexo;
-} Sexo;
-
 // Função auxiliar para verificar se uma edição já existe na lista
 int buscar_ou_criar_edicao(ResultadosEdicao* lista, int* qtd_edicoes, int ano, const char* estacao, int codigo_unico) {
 	for (int i = 0; i < *qtd_edicoes; i++) {
@@ -129,10 +123,6 @@ void resolver_q17_evolucao_mulheres(Atleta* atletas, int qtd_total_atletas) {
 
 	printf("\n--- Executando Codigo Questao 17 - Evolucao Mulheres ---\n");
 	printf("Logica de ID unico (Ano + Estacao)...\n");
-
-    // lista para conter os generos, que poderão ser acessados pelo athlete_id
-    Sexo* listaGeneros = (Sexo*)calloc(200000, sizeof(Sexo));
-
 	// ID -> Sexo
 	char* sexo_por_id = (char*) calloc(200000, sizeof(char));
 	for (int i = 0; i < qtd_total_atletas; i++) {
@@ -160,7 +150,6 @@ void resolver_q17_evolucao_mulheres(Atleta* atletas, int qtd_total_atletas) {
 
 	char linha[2048];
     char bufferGames[100]; // Para ler "1912 Summer Olympics"
-    char bufferID[50];     // Para ler o ID
     char bufferEstacao[20]; // Para guardar só a estação ("Summer")
 
     fgets(linha, 2048, file); // Pula cabeçalho
@@ -171,8 +160,7 @@ void resolver_q17_evolucao_mulheres(Atleta* atletas, int qtd_total_atletas) {
         pegarTexto(linha, 0, bufferGames);
 
         // 2. Coluna 6 (athlete_id)
-        pegarTexto(linha, 6, bufferID);
-        int id_atleta = atoi(bufferID);
+        int id_atleta = idAtleta_q17(linha,6);
 
         // 3. Separar Ano e Estação de dentro do bufferGames
         int ano = 0;
