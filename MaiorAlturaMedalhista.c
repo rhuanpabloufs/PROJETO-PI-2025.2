@@ -176,6 +176,7 @@ void MaiorAlturaHistoria(){ // acento no nome não compila
     qsort(atletas,tamanho,sizeof(Atleta),cmp);
     printf("O atleta de %s, %s eh o medalhista mais alto da historia, com altura de %d cm, tendo ganhado a medalha de %s.",atletas[0].esporte,atletas[0].nome,atletas[0].altura,atletas[0].medalha);
     free(atletas);
+    ungetc('\n', stdin); // insere um '\n' como se tivesse vindo do teclado para nao bugar e pedir outro enter na main 
 }
 // Mesma função, mas sem o ano como parametro, o que permite iterar todo o arquivo em busca do medalhista mais alto.
 
@@ -194,7 +195,6 @@ void resolver_maior_altura_medalhista() {
         // Precisamos limpar esse texto, para não bagunçar o menu da main
         char c;
         while ((c = getchar()) != '\n' && c != EOF);
-
         MaiorAlturaHistoria();
     }
 }
