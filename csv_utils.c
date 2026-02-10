@@ -120,3 +120,44 @@ Atleta* ler_atletas(const char* nome_arquivo, int* qtd_total) {
     printf("Sucesso! Lidos %d atletas.\n", contador);
     return atletas;
 }
+// foi adicionada a .h para evitar repeticao na questao evo_esportes_femininos
+// coleta dados de colunas especificas, usado em evolucaoMulheres e evo_esportes_mulheres.
+void pegarTexto(char* frase, int colunaDesejada, char* destino) {
+    int aspas = 0;
+    int coluna = 0; // semelhantes as da funcao anterior
+    int indice = 0;
+    destino[0] = '\0'; // inicializa o destino recebido (aponta para onde vamos enviar os textos)
+
+	// percorre a frase do arquivo 
+    for(int i = 0; frase[i] != '\0'; i++) {
+        char charAtual = frase[i]; // armazena o ultimo caractere lido
+
+        if(charAtual == '"') {
+            aspas = !aspas;	// filtra quando estamos lendo textos dentro de aspas, para ignorar as virgulas internas
+        }
+
+        else if(charAtual == ',' && !aspas) { // verifica se chegamos a uma virgula e nao estamos em aspas
+            if (coluna == colunaDesejada){
+                destino[indice] = '\0'; // Fecha a string (funciona por ser ponteiro)
+                return; // finaliza a funcao
+            }
+            coluna++;
+            indice = 0; // Reinicia buffer
+        }
+        else {
+            if (coluna == colunaDesejada) { // verifica se estamos na coluna certa
+                // copia o caractere, se nao for aspas
+                if(charAtual != '"') {
+					destino[indice++] = charAtual;
+            
+				}
+        	}
+    
+		}
+
+		// caso termine a linha na coluna desejada
+		if (coluna == colunaDesejada) {
+        	destino[indice] = '\0';
+    	}
+	}
+}

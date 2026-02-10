@@ -6,42 +6,6 @@
 #include <string.h>
 #include "olimpiadas.h"
 
-// Função de Victor para pegar texto de uma coluna específica
-void pegarTexto_reuso(char* frase, int colunaDesejada, char* destino) {
-    int aspas = 0;
-    int coluna = 0;
-    int indice = 0;
-    destino[0] = '\0';
-
-    for(int i = 0; frase[i] != '\0'; i++) {
-        char charAtual = frase[i];
-
-        if(charAtual == '"') {
-            aspas = !aspas;
-        }
-        else if(charAtual == ',' && !aspas) {
-            if (coluna == colunaDesejada) {
-                destino[indice] = '\0';
-                return;
-            }
-            coluna++;
-            indice = 0;
-        }
-        else {
-            if (coluna == colunaDesejada) {
-                if(charAtual != '"') {
-                    destino[indice++] = charAtual;
-                }
-            }
-        }
-    }
-    // Caso termine a linha na coluna desejada
-    if (coluna == colunaDesejada) {
-        destino[indice] = '\0';
-    }
-}
-
-
 // Verifica se um esporte (string) já está na lista daquela edição
 int esporte_ja_contado(EdicaoEsportes* edicao, char* nome_esporte) {
     for(int i = 0; i < edicao->qtd_esportes_distintos; i++) {
@@ -112,17 +76,17 @@ void resolver_evo_esportes_femininos(Atleta* atletas, int qtd_total_atletas) {
     while(fgets(linha, 2048, file)) {
 
         // Coluna 6: ID do Atleta
-        pegarTexto_reuso(linha, 6, bufferID);
+        pegarTexto(linha, 6, bufferID);
         int id = atoi(bufferID);
 
         // Verifica se é Mulher ('F') e ID válido
         if(id > 0 && id < 200000 && sexo_por_id[id] == 'F') {
 
             // Coluna 0: Games (ex: "1912 Summer Olympics")
-            pegarTexto_reuso(linha, 0, bufferGames);
+            pegarTexto(linha, 0, bufferGames);
 
             // Coluna 8: Discipline/Esporte (ex: "Swimming")
-            pegarTexto_reuso(linha, 8, bufferEsporte);
+            pegarTexto(linha, 8, bufferEsporte);
 
             // Extrai ano e estação
             sscanf(bufferGames, "%d %s", &ano, bufferEstacao);
@@ -164,6 +128,7 @@ void resolver_evo_esportes_femininos(Atleta* atletas, int qtd_total_atletas) {
         plotar_grafico_evolucao(lista_edicoes, qtd_edicoes, 2);
     }
 
+    // liberando a memoria
     free(sexo_por_id);
     free(lista_edicoes);
 }

@@ -6,6 +6,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "olimpiadas.h"
+
 // Função auxiliar para verificar se uma edição já existe na lista
 int buscar_ou_criar_edicao(ResultadosEdicao* lista, int* qtd_edicoes, int ano, const char* estacao, int codigo_unico) {
 	for (int i = 0; i < *qtd_edicoes; i++) {
@@ -75,41 +76,7 @@ int idAtleta_q17(char* frase, int colunaDesejada) {
 	return 0;
 }
 
-// funcao para coletar sexo e edicao das olimpiadas
-void pegarTexto(char* frase, int colunaDesejada, char* destino) {
-    int aspas = 0;
-    int coluna = 0; // semelhantes as da funcao anterior
-    int indice = 0;
-    destino[0] = '\0'; // inicializa o destino recebido (aponta para onde vamos enviar os textos)
-
-	// percorre a frase do arquivo 
-    for(int i = 0; frase[i] != '\0'; i++) {
-        char charAtual = frase[i]; // armazena o ultimo caractere lido
-
-        if(charAtual == '"') {
-            aspas = !aspas;	// filtra quando estamos lendo textos dentro de aspas, para ignorar as virgulas internas
-        }
-
-        else if(charAtual == ',' && !aspas) { // verifica se chegamos a uma virgula e nao estamos em aspas
-            if (coluna == colunaDesejada){
-                destino[indice] = '\0'; // Fecha a string (funciona por ser ponteiro)
-                return; // finaliza a funcao
-            }
-            coluna++;
-            indice = 0; // Reinicia buffer
-        }
-        else {
-            if (coluna == colunaDesejada) { // verifica se estamos na coluna certa
-                // copia o caractere, se nao for aspas
-                if(charAtual != '"') {
-					destino[indice++] = charAtual;
-            
-				}
-        	}
-    
-		}
-	}
-}
+// funcao para coletar sexo e edicao das olimpiadas -> movida para csv_utils
 
 // FUNÇÃO PRINCIPAL PARA SER CHAMADA NA MAIN
 void resolver_q17_evolucao_mulheres(Atleta* atletas, int qtd_total_atletas) {

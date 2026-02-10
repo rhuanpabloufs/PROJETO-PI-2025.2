@@ -1,10 +1,14 @@
+// ARQUIVO CORRESPONDENTE A QUESTAO 6:
+// Para uma determinada edicao dos jogos olimpicos, calcule a altura media dos atletas medalhistas
+
+// Inclusao das bibliotecas
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "olimpiadas.h"
 
 int contador = 0;
-int funcaoDeAjuda(int id, int altura, int atletas[],int tamanho){
+int funcaoDeAjuda(int id, int altura, int atletas[], int tamanho){
 	for(int i = 0; i < tamanho; i++){
 		// O atleta precisa estar na lista E ter uma altura valida
 		if(id == atletas[i] && altura > 0){

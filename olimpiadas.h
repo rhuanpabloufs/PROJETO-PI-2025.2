@@ -39,5 +39,6 @@ void resolver_q17_evolucao_mulheres(Atleta* atletas, int qtd_total_atletas); // 
 void resolver_maior_altura_medalhista(); // Adicionando as funções novas da questão criada
 void resolver_evo_esportes_femininos(Atleta* atletas, int qtd_total_atletas);
 void plotar_grafico_evolucao(void* lista, int qtd_edicoes, int grafico); // adicionando funcao para plotar graficos
+void pegarTexto(char* frase, int colunaDesejada, char* destino); // adicao da funcao de pegar texto de uma coluna desejada para evitar repeticao de codigo
 
 #endif //OLIMPIADAS_H
